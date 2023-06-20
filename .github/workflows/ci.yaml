@@ -22,6 +22,10 @@ jobs:
           - linux/amd64
           - linux/arm64
     steps:
+      - name: "Set current date as env variable"
+        id: build_date
+        run: |
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
       - name: Checkout
         uses: actions/checkout@v3
       - name: Docker meta
@@ -48,7 +52,7 @@ jobs:
           build-args: | 
             VERSION=${{ env.VERSION }}
             VCS_REF=${{ github.sha }}
-            BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            BUILD_DATE=${{ env.BUILD_DATE }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
       - name: Export digest
         run: |
