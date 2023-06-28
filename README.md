@@ -2,14 +2,15 @@
 ![build status](https://github.com/acernikovs/docker-firebase-tools-base/actions/workflows/ci.yaml/badge.svg)
 
 
-A lightweight Docker image with Firebase CLI for use in GitLab deployment pipelines.
+A lightweight [Docker image](https://hub.docker.com/r/acernikovs/firebase-tools-base) with Firebase CLI for use in the CI/CD pipelines.
+
 It slightly speeds up the deployment process to Firebase hosting.
 
 
-### Usage
+### How to use in Gitlab workflows
 
 
-In the deployment stage of the GitLab pipeline file, use the image `acernikovs/firebase-tools-base:latest` and remove the command that installs `firebase-tools`. 
+In the deployment stage of the GitLab workflow yaml file, use the image `acernikovs/firebase-tools-base:latest` and remove the command that installs `firebase-tools`. 
 
 Below is a very simple example snippet:
 
