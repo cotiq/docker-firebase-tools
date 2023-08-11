@@ -21,8 +21,8 @@ deploy-production:
   stage: deploy
   image: acernikovs/firebase-tools-base:latest
   script:
-    - firebase use production --token $FIREBASE_TOKEN
-    - firebase deploy --only hosting -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive --token $FIREBASE_TOKEN
+    - firebase use production
+    - firebase deploy --only hosting -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive
   only:
     - main
 ```
