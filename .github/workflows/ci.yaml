@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY_IMAGE: acernikovs/firebase-tools-base
-  VERSION: 12.9.0
+  VERSION: 12.9.1
 
 jobs:
   build:
