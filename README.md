@@ -4,6 +4,41 @@
 
 A lightweight [Docker image](https://hub.docker.com/r/acernikovs/firebase-tools) with Firebase CLI.
 
+### How to use in GitHub Actions
+
+
+In the workflow yaml file, use the image `acernikovs/firebase-tools:latest`.
+
+
+```
+jobs:
+
+# Other pipeline stages omitted for brevity
+
+  deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: acernikovs/firebase-tools:latest
+      env:
+        FIREBASE_TOKEN: "${{ secrets.FIREBASE_TOKEN }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build App
+        run: npm run build
+
+      - name: Deploy to Firebase
+        run: |
+          firebase use production
+          firebase deploy --only hosting -m "Pipeline $GITHUB_RUN_NUMBER, build $GITHUB_RUN_ID" --non-interactive
+
+```
+
+
 ### How to use in Gitlab workflows
 
 
