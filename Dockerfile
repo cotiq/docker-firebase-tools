@@ -13,6 +13,6 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.vcs-url="https://github.com/cotiq/docker-firebase-tools" \
       org.label-schema.vcs-ref=${VCS_REF}
 
-RUN npm install -g firebase-tools@"${VERSION}" --no-optional && \
+RUN npm install -g firebase-tools@"${VERSION}" --omit=optional && \
     npm cache clean --force
 CMD ["sh"]
