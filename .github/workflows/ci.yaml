@@ -9,7 +9,7 @@ on:
       - '**/README.md'
 
 env:
-  REGISTRY_IMAGE: acernikovs/firebase-tools
+  REGISTRY_IMAGE: cotiq/firebase-tools
 
 jobs:
   build:
