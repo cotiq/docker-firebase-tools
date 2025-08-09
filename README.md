@@ -1,6 +1,4 @@
 # firebase-tools
-![build status](https://github.com/cotiq/docker-firebase-tools/actions/workflows/ci.yaml/badge.svg)
-
 
 A lightweight [Docker image](https://hub.docker.com/r/cotiq/firebase-tools) with Firebase CLI.
 
