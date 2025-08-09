@@ -1,5 +1,5 @@
 # Based on https://docs.docker.com/build/ci/github-actions/multi-platform/
-name: ci
+name: Build and Push Docker Images
 
 on:
   push:
