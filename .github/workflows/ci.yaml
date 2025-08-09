@@ -5,8 +5,8 @@ on:
   push:
     branches:
       - "main"
-    paths-ignore:
-      - '**/README.md'
+    paths:
+      - 'VERSION'
 
 env:
   REGISTRY_IMAGE: cotiq/firebase-tools
@@ -63,7 +63,7 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: | 
+          build-args: |
             VERSION=${{ env.VERSION }}
             VCS_REF=${{ github.sha }}
             BUILD_DATE=${{ env.BUILD_DATE }}
