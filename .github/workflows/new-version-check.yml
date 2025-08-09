@@ -1,0 +1,81 @@
+name: Update firebase-tools VERSION
+
+on:
+  schedule:
+    - cron: "15 3 * * *" # daily at 03:15 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write        # commit and push branch
+  pull-requests: write   # open PR
+
+jobs:
+  check-and-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node (for npm view)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Read local version
+        id: local
+        run: |
+          v=$(tr -d '[:space:]' < VERSION)
+          echo "value=$v" >> "$GITHUB_OUTPUT"
+
+      - name: Get latest version from npm
+        id: npm
+        run: |
+          latest=$(npm view firebase-tools version)
+          if [ -z "$latest" ]; then
+            echo "Failed to fetch version from npm"
+            exit 1
+          fi
+          echo "value=$latest" >> "$GITHUB_OUTPUT"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          if [[ "${{ steps.local.outputs.value }}" != "${{ steps.npm.outputs.value }}" ]]; then
+            echo "update_needed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "update_needed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update VERSION file
+        if: steps.compare.outputs.update_needed == 'true'
+        run: |
+          new="${{ steps.npm.outputs.value }}"
+          echo "$new" > VERSION
+
+      - name: Create PR
+        if: steps.compare.outputs.update_needed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: bump firebase-tools to v${{ steps.npm.outputs.value }}"
+          title: "chore: bump firebase-tools to v${{ steps.npm.outputs.value }}"
+          body: |
+            This PR updates **firebase-tools** from `${{ steps.local.outputs.value }}` to `${{ steps.npm.outputs.value }}`.
+
+            - Source: npm registry
+            - Trigger: scheduled checker
+          branch: "chore/bump-firebase-tools-v${{ steps.npm.outputs.value }}"
+          delete-branch: true
+          labels: |
+            dependencies
+            automated
+          signoff: false
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+      - name: No update needed
+        if: steps.compare.outputs.update_needed != 'true'
+        run: |
+          echo "Already up to date: ${{ steps.local.outputs.value }}"
