@@ -1,0 +1,70 @@
+name: Tag and Release
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Images"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  tag-and-release:
+    if: ${{ (github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success') || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main with tags
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Read version
+        id: ver
+        run: |
+          VERSION=$(cat VERSION)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "tag=v${VERSION}" >> $GITHUB_ENV
+
+      - name: Ensure tag does not already exist
+        id: checktag
+        run: |
+          git fetch --tags --force
+          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create annotated tag and push
+        if: steps.checktag.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ env.tag }}" -m "Release for firebase-tools ${{ env.VERSION }}"
+          git push origin "${tag}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.tag }}
+          name: ${{ env.tag }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+          body: |
+            ## Docker Image
+            
+            The corresponding Docker image is available on Docker Hub:
+            - `docker pull cotiq/firebase-tools:${{ env.VERSION }}`
+            
+            [Link to Docker Hub Image](https://hub.docker.com/r/cotiq/firebase-tools/tags?page=1&name=${{ env.VERSION }})
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log status if tag already exists
+        if: steps.checktag.outputs.exists == 'true'
+        run: echo "Tag ${{ env.tag }} already exists. No new release will be created."
