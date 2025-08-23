@@ -6,8 +6,9 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write        # commit and push branch
-  pull-requests: write   # open PR
+  contents: write
+  pull-requests: write
+  issues: write
 
 jobs:
   check-and-pr:
