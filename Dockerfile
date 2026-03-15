@@ -4,14 +4,12 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION
 
-LABEL org.label-schema.schema-version="1.0" \
-      org.label-schema.name="firebase-tools" \
-      org.label-schema.description="A lightweight Docker image with Firebase CLI" \
-      org.label-schema.version=${VERSION} \
-      org.label-schema.build-date=${BUILD_DATE} \
-      org.label-schema.url="https://github.com/firebase/firebase-tools" \
-      org.label-schema.vcs-url="https://github.com/cotiq/docker-firebase-tools" \
-      org.label-schema.vcs-ref=${VCS_REF}
+LABEL org.opencontainers.image.title="firebase-tools" \
+      org.opencontainers.image.description="A lightweight Docker image with Firebase CLI" \
+      org.opencontainers.image.version=${VERSION} \
+      org.opencontainers.image.created=${BUILD_DATE} \
+      org.opencontainers.image.source="https://github.com/cotiq/docker-firebase-tools" \
+      org.opencontainers.image.revision=${VCS_REF}
 
 RUN npm install -g firebase-tools@"${VERSION}" --omit=optional && \
     npm cache clean --force
