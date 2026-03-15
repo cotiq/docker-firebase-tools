@@ -21,7 +21,7 @@ jobs:
         FIREBASE_TOKEN: "${{ secrets.FIREBASE_TOKEN }}"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: npm install
