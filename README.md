@@ -2,6 +2,15 @@
 
 A lightweight [Docker image](https://hub.docker.com/r/cotiq/firebase-tools) with Firebase CLI.
 
+### Multi-Architecture Support
+
+This image is built for multiple platforms and works natively on:
+
+- `linux/amd64` (x86_64)
+- `linux/arm64` (Apple Silicon, AWS Graviton, etc.)
+
+Docker will automatically pull the correct image for your architecture.
+
 ### How to use in GitHub Actions
 
 
