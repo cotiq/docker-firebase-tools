@@ -12,5 +12,6 @@ LABEL org.opencontainers.image.title="firebase-tools" \
       org.opencontainers.image.revision=${VCS_REF}
 
 RUN npm install -g firebase-tools@"${VERSION}" --omit=optional && \
-    npm cache clean --force
+    npm cache clean --force && \
+    firebase --version \
 CMD ["sh"]
